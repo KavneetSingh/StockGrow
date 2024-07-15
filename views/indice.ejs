@@ -1,0 +1,66 @@
+<% layout("/layouts/boilerplate") -%>
+    
+<div class="index">
+    <h2 class="mt-3 mb-3"><%=metadata.indexName%></h2>
+    <h4>
+        <div class="currPrice">
+            Latest price: <%=metadata.last%>
+        </div>
+    </h4>
+
+    <h5>
+        <div class="change">
+            <div class="priceChng chng">
+                <% if(metadata.change.toFixed(2)>0) { %>
+                    <div class="green">
+                        &plus;<%=metadata.change.toFixed(2)%>
+                    </div>
+                <% } %>
+                <% if(metadata.change.toFixed(2)<0) { %>
+                    <div class="red">
+                        &minus;<%=metadata.change.toFixed(2)%>
+                    </div>
+                <% } %>
+                
+            </div>
+            <div class="percChng chng">
+                <% if(metadata.change.toFixed(2)>0) { %>
+                    <div class="green">
+                        &plus;<%=metadata.percChange%>&percnt;
+                    </div>
+                <% } %>
+                <% if(metadata.change.toFixed(2)<0) { %>
+                    <div class="red">
+                        &minus;<%=metadata.percChange%>&percnt;
+                    </div>
+                <% } %>
+                
+            </div>
+        </div>
+    </h5>
+
+    <div class="ohlc">
+        <div class="open">
+            Open= <%=metadata.open%>
+        </div>
+        <div class="prevclose">
+            Prev Close= <%=metadata.previousClose%>
+        </div>
+        <div class="high">
+            Day's high= <%=metadata.high%>
+        </div>
+        <div class="low">
+            Day's low= <%=metadata.low%>
+        </div>
+    </div>
+
+    <hr>
+</div>
+
+<div class="stock-list col-8 offset-2">
+    <% for(let i=0; i<data.data.length; i++) { %>
+        <div class="stock">
+            <%= data.data[i].symbol %>
+        </div>
+     <% } %>
+</div>

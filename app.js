@@ -8,6 +8,8 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
+const ejsMate= require('ejs-mate');
+app.engine("ejs", ejsMate);
 const axios = require('axios');
 const { NseIndia }= require('stock-nse-india/build/index.js');
 const  nseIndia = new NseIndia();
@@ -59,9 +61,11 @@ app.get("/index/:idx", async (req,res) =>{
 
     let index= await Indice.findOne({route: idx});
     console.log(index);
-    nseIndia.getEquityStockIndices(index.symbol).then(data=>{
-        console.log(data.metadata);
-    });
+    const data= await nseIndia.getEquityStockIndices(index.symbol);
+
+    console.log(data);
+    const metadata= data.metadata;
+    res.render("indice.ejs", {metadata, data});
 });
 
 
