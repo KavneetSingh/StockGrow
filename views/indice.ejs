@@ -58,9 +58,73 @@
 </div>
 
 <div class="stock-list col-8 offset-2">
-    <% for(let i=0; i<data.data.length; i++) { %>
-        <div class="stock">
-            <%= data.data[i].symbol %>
-        </div>
-     <% } %>
+    <table class="stock-table">
+        <thead>
+            <th>Symbol</th>
+            <th class="price-header">Price</th>
+            <th>Change</th>
+            <th>Day's high</th>
+            <th>Day's low</th>
+        </thead>
+        <% for(let i=0; i<data.data.length; i++) { %>
+                <tr>
+                    <!-- <div class="stock"> -->
+                        <td>
+                            <div class="symbol">
+                                <a href="/stock/<%=data.data[i].symbol%>">
+                                    <%= data.data[i].symbol %>
+                                </a>
+                            </div>
+                        </td>
+                        <td class="price">
+                            <div class="price">
+                                <% if(data.data[i].change.toFixed(2)>0) { %>
+                                    <div class="green">
+                                        <span class="curr-price">
+                                            <%= data.data[i].lastPrice %>
+                                        </span>
+                                        &plus;<%=data.data[i].change.toFixed(2)%>
+                                    </div>
+                                <% } %>
+                                <% if(data.data[i].change.toFixed(2)<0) { %>
+                                    <div class="red">
+                                        <span class="curr-price">
+                                            <%= data.data[i].lastPrice %>
+                                        </span>
+                                        <%=data.data[i].change.toFixed(2)%>
+                                    </div>
+                                <% } %>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="chng-percnt">
+                                <% if(data.data[i].pChange.toFixed(2)>=0) { %>
+                                    <div class="green">
+                                        &plus;<%=data.data[i].pChange.toFixed(2)%>&percnt;
+                                    </div>
+                                <% } %>
+                                <% if(data.data[i].pChange.toFixed(2)<0) { %>
+                                    <div class="red">
+                                        <%=data.data[i].pChange.toFixed(2)%>&percnt;
+                                    </div>
+                                <% } %>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="day-high">
+                                <%= data.data[i].dayHigh %>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="day-low">
+                                <%= data.data[i].dayLow %>
+                            </div>
+                        </td>
+                        
+                    <!-- </div> -->
+                </tr>
+            
+         <% } %>
+    </table>
+    
 </div>

@@ -10,7 +10,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 const ejsMate= require('ejs-mate');
 app.engine("ejs", ejsMate);
-const axios = require('axios');
+// const axios = require('axios');
 const { NseIndia }= require('stock-nse-india/build/index.js');
 const  nseIndia = new NseIndia();
 const Indice= require("./models/Indices");
@@ -51,8 +51,10 @@ function run(){
 
 run();
 
-app.get("/", (req,res)=>{
-    res.render("index.ejs");
+app.get("/", async(req,res)=>{
+    const data= await nseIndia.getEquityStockIndices("NIFTY 50");
+    const metadata= data.metadata;
+    res.render("indice.ejs", {metadata, data});
 });
 
 app.get("/index/:idx", async (req,res) =>{
@@ -60,12 +62,28 @@ app.get("/index/:idx", async (req,res) =>{
     console.log(idx);
 
     let index= await Indice.findOne({route: idx});
-    console.log(index);
+    // console.log(index);
     const data= await nseIndia.getEquityStockIndices(index.symbol);
 
-    console.log(data);
+    // console.log(data);
     const metadata= data.metadata;
     res.render("indice.ejs", {metadata, data});
+});
+
+app.get("/stock/:st", async(req, res)=>{
+    const {st}= req.params;
+    console.log(st);
+    const details= await nseIndia.getEquityDetails(st);
+    console.log(details);
+});
+
+app.get("/search", async (req,res)=>{
+    console.log(req.query);
+    const { stock }= req.query;
+    console.log(stock);
+    console.log("YES");
+    const details= await nseIndia.getEquityDetails(stock);
+    console.log(details);
 });
 
 
