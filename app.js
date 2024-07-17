@@ -75,6 +75,7 @@ app.get("/stock/:st", async(req, res)=>{
     console.log(st);
     const details= await nseIndia.getEquityDetails(st);
     console.log(details);
+    res.render("stock.ejs", {details});
 });
 
 app.get("/search", async (req,res)=>{
@@ -84,6 +85,7 @@ app.get("/search", async (req,res)=>{
     console.log("YES");
     const details= await nseIndia.getEquityDetails(stock);
     console.log(details);
+    res.render("stock.ejs", {details});
 });
 
 

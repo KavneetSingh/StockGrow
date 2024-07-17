@@ -1,0 +1,59 @@
+<% layout("/layouts/boilerplate") -%>
+
+<div class="stock-page">
+    <h2 class="mt-3 mb-3"><%=details.info.companyName%></h2>
+    <div class="symbol">
+        <h4>
+            <%=details.info.symbol%>
+        </h4>
+    </div>
+    <div class="update-time">
+        <%= details.metadata.lastUpdateTime %>
+    </div>
+    <div class="price mt-3">
+        <% if(details.priceInfo.change.toFixed(2)>0) { %>
+            <div class="green">
+                <h3>
+                    <span class="curr-price">
+                        <%= details.priceInfo.lastPrice.toFixed(2) %>
+                    </span>
+                    <span class="pChange">
+                        &plus;<%=details.priceInfo.change.toFixed(2)%>
+                    </span>
+                    <span class="changePerc">
+                        &plus;<%=details.priceInfo.pChange.toFixed(2)%>&percnt;
+                    </span>
+                </h3>
+            </div>
+        <% } %>
+        <% if(details.priceInfo.change.toFixed(2)<0) { %>
+            <div class="red">
+                <h3>
+                    <span class="curr-price">
+                        <%= details.priceInfo.lastPrice.toFixed(2) %>
+                    </span>
+                    <span class="pChange">
+                        <%=details.priceInfo.change.toFixed(2)%>
+                    </span>
+                    <span class="changePerc">
+                        <%=details.priceInfo.pChange.toFixed(2)%>&percnt;
+                    </span>
+                </h3>
+            </div>
+        <% } %>
+    </div>
+    <div class="ohlc">
+        <div class="open">
+            Open= <%=details.priceInfo.open%>
+        </div>
+        <div class="prevclose">
+            Prev Close= <%=details.priceInfo.previousClose%>
+        </div>
+        <div class="high">
+            Day's high= <%=details.priceInfo.intraDayHighLow.max%>
+        </div>
+        <div class="low">
+            Day's low= <%=details.priceInfo.intraDayHighLow.min%>
+        </div>
+    </div>
+</div>
