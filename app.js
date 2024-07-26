@@ -14,6 +14,14 @@ app.engine("ejs", ejsMate);
 const { NseIndia }= require('stock-nse-india/build/index.js');
 const  nseIndia = new NseIndia();
 const Indice= require("./models/Indices");
+const User= require('./models/user.js');
+const passport= require("passport");
+const LocalStrategy= require('passport-local');
+const session= require("express-session");
+const { saveRedirectUrl } = require('./middleware.js');
+
+const methodOverride= require("method-override");
+app.use(methodOverride('_method'));
 
 async function main() {
     await mongoose.connect('mongodb://127.0.0.1:27017/StockGrow');
@@ -25,6 +33,37 @@ main()
     .catch(err=>{
         console.log(err);
     })
+
+const sessionOptions= {
+    secret: "mySuperSecretCode",
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        expires: Date.now() + 1000 * 60 * 60 * 24,
+        maxAge: 1000 * 60 * 60 * 24,      //1 day session
+        httpOnly: true
+    }
+};
+
+app.use(session(sessionOptions));
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+app.get("/demouser", async (req, res)=>{
+    let fakeUser= new User({
+        email: "xyzrandom@gmail.com",
+        username: "xyzrandom"
+    })
+
+    let registeredUser= await User.register(fakeUser, "student123");
+    res.send(registeredUser);
+    // console.log("Done");
+})
+    
 
 function run(){
     // nseIndia.getAllStockSymbols().then(symbols  => {
@@ -49,7 +88,7 @@ function run(){
     // })
 }
 
-run();
+// run();
 
 app.get("/", async(req,res)=>{
     const data= await nseIndia.getEquityStockIndices("NIFTY 50");
@@ -87,6 +126,45 @@ app.get("/search", async (req,res)=>{
     console.log(details);
     res.render("stock.ejs", {details});
 });
+
+app.get("/signup", (req, res)=>{
+    res.render("users/signup.ejs")
+})
+
+app.post("/signup", async (req,res)=>{
+    try{
+        let {username, email, password}= req.body;
+        const newUser= new User({email, username});
+        const registeredUser= await User.register(newUser, password);
+        console.log(registeredUser);
+        req.login(registeredUser, (err)=>{
+            if(err){
+                return next(err);
+            }
+            // req.flash("success", "Welcome to BookYourStay!");
+            res.redirect("/");
+        });
+    }
+    catch(e){
+        // req.flash("error", e.message);
+        res.redirect("/signup");
+    }
+})
+
+app.get("/login", (req, res)=>{
+    res.render("users/login.ejs");
+})
+
+app.post(
+     "/login",
+     saveRedirectUrl,
+    passport.authenticate("local", {failureRedirect: '/login'}), 
+     async(req, res)=>{
+        let redirectUrl= res.locals.redirectUrl || "/";
+        console.log("here-> ", redirectUrl);
+        res.redirect(redirectUrl);
+    }
+)
 
 
 app.listen(port, (req, res)=>{

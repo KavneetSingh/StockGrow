@@ -43,6 +43,15 @@
           <input name="stock" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
           <button class="btn btn-outline-success" type="submit">Search</button>
         </form>
+        <div class="navbar-nav me-4">
+          <% //if(!currUser) { %>
+          <a class="nav-item nav-link" href="/signup">Signup </a>
+          <a class="nav-item nav-link" href="/login">Log in</a>
+          <% //} %>
+          <% //if(currUser) { %>
+          <a class="nav-item nav-link" href="/logout">Log out</a>
+          <% //} %>
+        </div>
       </div>
     </div>
   </nav>
